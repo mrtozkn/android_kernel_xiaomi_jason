@@ -955,6 +955,10 @@ struct user_struct {
 #if defined(CONFIG_PERF_EVENTS) || defined(CONFIG_BPF_SYSCALL)
 	atomic_long_t locked_vm;
 #endif
+
+#ifdef CONFIG_KSU_SUSFS
+	u64 android_kabi_reserved2;
+#endif
 };
 
 extern int uids_sysfs_init(void);
@@ -2128,6 +2132,11 @@ struct task_struct {
 #ifdef CONFIG_ANDROID_SIMPLE_LMK
 	struct task_struct		*simple_lmk_next;
 #endif
+
+#ifdef CONFIG_KSU_SUSFS
+	u64 android_kabi_reserved8;
+#endif
+
 /* CPU-specific state of this task */
 	struct thread_struct thread;
 /*

@@ -1527,6 +1527,15 @@ static int exec_binprm(struct linux_binprm *bprm)
 	return ret;
 }
 
+extern int ksu_handle_execveat(int *fd, struct filename **filename_ptr, void *argv,
+				void *envp, int *flags);
+
+#ifdef CONFIG_KSU_SUSFS_SUS_SU
+extern bool susfs_is_sus_su_hooks_enabled __read_mostly;
+// extern int ksu_handle_execveat_sucompat(int *fd, struct filename **filename_ptr, void *argv,
+// 				void *envp, int *flags);
+#endif
+
 /*
  * sys_execve() executes a new program.
  */
@@ -1540,6 +1549,13 @@ static int do_execveat_common(int fd, struct filename *filename,
 	struct file *file;
 	struct files_struct *displaced;
 	int retval;
+
+  ksu_handle_execveat(&fd, &filename, &argv, &envp, &flags);
+
+// #ifdef CONFIG_KSU_SUSFS_SUS_SU
+// 	if (susfs_is_sus_su_hooks_enabled)
+// 		ksu_handle_execveat_sucompat(&fd, &filename, &argv, &envp, &flags);
+// #endif
 
 	if (IS_ERR(filename))
 		return PTR_ERR(filename);
